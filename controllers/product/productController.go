@@ -34,21 +34,6 @@ func Show(c *gin.Context) {
 }
 func Create(c *gin.Context) {
 	var product models.Product
-	var inputMap map[string]interface{}
-
-	// Bind JSON input ke map untuk memeriksa keberadaan field yang tidak diharapkan
-	if err := c.ShouldBindJSON(&inputMap); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON format", "error": err.Error()})
-		return
-	}
-
-	// Check for unexpected fields
-	for key := range inputMap {
-		if key != "name" && key != "description" {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Unexpected field in input: " + key})
-			return
-		}
-	}
 
 	// Bind JSON input to the Product struct
 	if err := c.ShouldBindJSON(&product); err != nil {
