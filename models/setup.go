@@ -7,7 +7,7 @@ import (
 
 var DB *gorm.DB
 
-func ConnectDatabase() {
+func ConnectDatabase() *gorm.DB {
 	database, err := gorm.Open(mysql.Open("root:@tcp(localhost:3306)/go_restapi_gin"))
 	if err != nil {
 		panic(err)
@@ -16,4 +16,6 @@ func ConnectDatabase() {
 	database.AutoMigrate(&Product{})
 
 	DB = database
+
+	return database
 }
