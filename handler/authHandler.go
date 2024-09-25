@@ -38,3 +38,29 @@ func (h *authHandler) Create(c *gin.Context) {
 		"data":    user,
 	})
 }
+
+func (h *authHandler) Login(c *gin.Context) {
+	var loginRequest request.LoginRequest
+
+	err := c.ShouldBindJSON(&loginRequest)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"status": "error", "message": "Invalid input", "error": err.Error()})
+		return
+	}
+
+	result, err := h.authUseCase.Login(loginRequest)
+	if err != nil {
+		if result["status"] == "error" {
+			if result["message"] == "email or password are wrong" {
+				c.AbortWithStatusJSON(http.StatusUnauthorized, result) // 401 Unauthorized untuk kredensial yang salah
+			} else {
+				c.AbortWithStatusJSON(http.StatusInternalServerError, result) // 500 Internal Server Error untuk kesalahan lainnya
+			}
+		} else {
+			c.AbortWithStatusJSON(http.StatusBadRequest, result) // 400 Bad Request untuk kasus lainnya
+		}
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
+}

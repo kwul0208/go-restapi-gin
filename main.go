@@ -35,6 +35,7 @@ func main() {
 	r.DELETE("api/products", productHandler.Delete)
 
 	r.POST("api/register", authHandler.Create)
+	r.POST("api/login", authHandler.Login)
 
 	r.Run()
 }
