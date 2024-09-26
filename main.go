@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/kwul0208/go-restapi-gin/handler"
 	"github.com/kwul0208/go-restapi-gin/initializers"
+	"github.com/kwul0208/go-restapi-gin/middleware"
 
 	// "github.com/kwul0208/go-restapi-gin/models"
 	"github.com/kwul0208/go-restapi-gin/repository"
@@ -28,11 +29,14 @@ func main() {
 	authUseCase := use_case.NewAuthUseCase(authRepository)
 	authHandler := handler.NewAuthHandler(authUseCase)
 
-	r.GET("api/products", productHandler.Index)
-	r.GET("api/products/:id", productHandler.Show)
-	r.POST("api/products", productHandler.Create)
-	r.PUT("api/products/:id", productHandler.Update)
-	r.DELETE("api/products", productHandler.Delete)
+	productRoutes := r.Group("api/products", middleware.Auth())
+	{
+		productRoutes.GET("/", productHandler.Index)
+		productRoutes.GET("/:id", productHandler.Show)
+		productRoutes.POST("/", productHandler.Create)
+		productRoutes.PUT("/:id", productHandler.Update)
+		productRoutes.DELETE("/", productHandler.Delete)
+	}
 
 	r.POST("api/register", authHandler.Create)
 	r.POST("api/login", authHandler.Login)

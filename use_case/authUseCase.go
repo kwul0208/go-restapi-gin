@@ -2,7 +2,6 @@ package use_case
 
 import (
 	"errors"
-	"log"
 	"os"
 	"time"
 
@@ -31,7 +30,7 @@ func (au *authUseCase) Create(registerRequest request.RegisterRequest) (models.U
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(registerRequest.Password), 10)
 	if err != nil {
-		log.Panic(err.Error())
+		// log.Panic(err.Error())
 	}
 
 	user := models.Users{
